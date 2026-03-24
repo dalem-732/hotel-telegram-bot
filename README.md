@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Telegram Hotel Bot
 
 Telegram-бот для поиска и подбора отелей через `Booking.com API` (RapidAPI).
@@ -176,3 +177,7 @@ Telegram-бот для поиска и подбора отелей через `B
 ## Лицензия
 
 Проект распространяется под лицензией MIT. См. файл `LICENSE`.
+=======
+# hotel-telegram-bot
+Telegram-бот для поиска и подбора отелей через `Booking.com API` (RapidAPI).
+>>>>>>> ee0c38d7cb39ea4284b0880c64229497b92a0b3e
