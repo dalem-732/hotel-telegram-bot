@@ -112,7 +112,7 @@ def finish_search(message: Message):
     chat_id = message.chat.id
     data = user_states.get(chat_id)
     
-    bot.send_message(chat_id, "⏳ Ищу отели, пожалуйста подождите...")
+    bot.send_message(chat_id, "⏳ Ищу отели, пожалуйста, подождите...")
     
     sort_map = {
         "lowprice": "PRICE",
@@ -141,7 +141,7 @@ def finish_search(message: Message):
         caption = (
             f"🏨 *{hotel['name']}*\n"
             f"⭐ Рейтинг: {hotel['rating']}\n"
-            f"💰 Цена: {hotel['price']} {hotel['currency']}\n"
+            f"💰 Цена: {hotel['price']:.2f} {hotel['currency']}\n"
             f"📍 [Показать на карте](https://www.google.com/maps/search/?api=1&query={hotel['latitude']},{hotel['longitude']})\n\n"
             f"[Забронировать]({hotel['link']})"
         )
