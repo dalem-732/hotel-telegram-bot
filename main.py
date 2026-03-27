@@ -9,18 +9,46 @@ from models import User, SearchHistory
 
 user_states = {}
 
+MENU_BUTTONS = {
+    "🏷 Дешевые отели": "lowprice",
+    "⭐ По рейтингу": "guest_rating",
+    "🏆 Лучшее предложение": "bestdeal",
+    "📜 История": "history"
+}
+
+def main_menu():
+    markup = ReplyKeyboardMarkup(resize_keyboard=True)
+    markup.row(
+        KeyboardButton("🏷 Дешевые отели"),
+        KeyboardButton("⭐ По рейтингу")
+    )
+    markup.row(
+        KeyboardButton("🏆 Лучшее предложение"),
+        KeyboardButton("📜 История")
+    )
+    return markup
+
 @bot.message_handler(commands=['start', 'help'])
 def send_welcome(message: Message):
     User.get_or_create(user_id=str(message.from_user.id), defaults={'username': message.from_user.username})
     text = (
         "Привет! Я бот для поиска отелей.\n\n"
-        "Доступные команды:\n"
+        "Выберите команду из меню или используйте:\n"
         "/lowprice — Топ самых дешевых отелей\n"
         "/guest_rating — Топ отелей по рейтингу\n"
         "/bestdeal — Лучшее предложение (цена/качество)\n"
         "/history — История поиска"
     )
-    bot.send_message(message.chat.id, text)
+    bot.send_message(message.chat.id, text, reply_markup=main_menu())
+
+@bot.message_handler(func=lambda m: m.text in MENU_BUTTONS)
+def handle_menu_buttons(message: Message):
+    command = MENU_BUTTONS[message.text]
+    message.text = f"/{command}"
+    if command == "history":
+        get_history(message)
+    else:
+        start_search(message)
 
 @bot.message_handler(commands=['history'])
 def get_history(message: Message):
@@ -51,7 +79,7 @@ def start_search(message: Message):
     }
     bot.send_message(message.chat.id, "Введите город для поиска:")
 
-@bot.message_handler(func=lambda m: user_states.get(m.chat.id, {}).get("step") == "city")
+@bot.message_handler(func=lambda m: user_states.get(m.chat.id, {}).get("step") == "city" and m.text not in MENU_BUTTONS)
 def get_city(message: Message):
     city = message.text
     bot.send_message(message.chat.id, "🔍 Ищу город...")
@@ -98,7 +126,7 @@ def on_checkout_select(c):
         else:
             finish_search(c.message)
 
-@bot.message_handler(func=lambda m: user_states.get(m.chat.id, {}).get("step") == "price_range")
+@bot.message_handler(func=lambda m: user_states.get(m.chat.id, {}).get("step") == "price_range" and m.text not in MENU_BUTTONS)
 def get_price(message: Message):
     try:
         low, high = map(int, message.text.split('-'))
