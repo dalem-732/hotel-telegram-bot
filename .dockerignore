@@ -9,3 +9,11 @@ __pycache__
 *.pyd
 *.db
 history.db
+.pytest_cache
+.mypy_cache
+.ruff_cache
+.coverage
+htmlcov
+tests
+.github
+requirements-dev.txt
